@@ -30,6 +30,11 @@ const User = sequelize.define(
             type: DataTypes.UUID,
             allowNull: false,
         },
+        created_at:{
+            type: 'TIMESTAMP',
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            allowNull: false
+        },
         allowed_notifications: {
             type: DataTypes.TINYINT,
             allowNull: false,
