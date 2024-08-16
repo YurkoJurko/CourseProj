@@ -1,9 +1,9 @@
-const Post = require("./../../../models/Post");
+const Tag = require("./../../../models/Tag");
 
-module.exports.getPostsList = async (req, res) => {
+module.exports.getTagsList = async (req, res) => {
     try{
-        const posts = await Post.findAll();
-        res.status(200).json(posts);
+        const tags = await Tag.findAll();
+        res.status(200).json(tags);
     }catch(err){
         res.status(500).json({
             error: err.message,
@@ -11,15 +11,15 @@ module.exports.getPostsList = async (req, res) => {
     }
 };
 
-module.exports.getPost = async (req, res) => {
+module.exports.getTag = async (req, res) => {
     try{
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
+        const tagId = req.params.id;
+        const tag = await Tag.findByPk(tagId);
 
-        if(!post){
-            res.status(400).json({error: "Post not found"});
+        if(!tag){
+            res.status(400).json({error: "Tag not found"});
         }
-        res.status(200).json(post);
+        res.status(200).json(tag);
     }catch(err){
         res.status(500).json({
             error: err.message,
@@ -27,23 +27,20 @@ module.exports.getPost = async (req, res) => {
     }
 };
 
-module.exports.createPost = async (req, res) => {
+module.exports.createTag = async (req, res) => {
     try {
-        const { tag_id, title, content, short_description, is_private } = req.body;
+        const { name, icon_path} = req.body;
 
-        if (!tag_id || !title || !content || !short_description || is_private === undefined) {
+        if (!name || !icon_path) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const post = await Post.create({
-            tag_id,
-            title,
-            content,
-            short_description,
-            is_private,
+        const tag = await Tag.create({
+            name,
+            icon_path,
         });
 
-        return res.status(201).json(post);
+        return res.status(201).json(tag);
 
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -51,30 +48,27 @@ module.exports.createPost = async (req, res) => {
 };
 
 
-module.exports.updatePost = async (req, res) => {
+module.exports.updateTag = async (req, res) => {
     try{
-        const {tag_id, title, content, short_description, is_private} = req.body;
-        const postId = req.params.id;
+        const {name, icon_path} = req.body;
+        const tagId = req.params.id;
 
-        if (!postId || !tag_id || !title || !content || !short_description || !is_private) {
+        if (!name || !icon_path) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const [updated] = await Post.update({
-            tag_id,
-            title,
-            content,
-            short_description,
-            is_private,
+        const [updated] = await Tag.update({
+            name,
+            icon_path,
         },{
-            where: {id:postId}
+            where: {id:tagId}
         });
         if(!updated){
-            res.status(400).json({error: "Post Not Found!",});
+            res.status(400).json({error: "Tag Not Found!",});
         }
 
-        const updatedPost = await Post.findByPk(postId)
-        return res.status(201).json(updatedPost);
+        const updatedTag = await Tag.findByPk(tagId)
+        return res.status(201).json(updatedTag);
 
     }catch(err){
         res.status(500).json({
@@ -83,16 +77,16 @@ module.exports.updatePost = async (req, res) => {
     }
 }
 
-module.exports.deletePost = async (req, res) => {
+module.exports.deleteTag = async (req, res) => {
     try {
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
-        if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+        const tagId = req.params.id;
+        const tag = await Tag.findByPk(tagId);
+        if (!tag) {
+            return res.status(404).json({ error: "Tag not found" });
         }
 
-        await Post.destroy({
-            where: { id: postId }
+        await Tag.destroy({
+            where: { id: tagId }
         });
 
         res.status(204).end();
