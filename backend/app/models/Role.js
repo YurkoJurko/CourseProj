@@ -1,5 +1,7 @@
 const sequelize = require("../DB/mysql");
 const { DataTypes } = require("sequelize");
+const User = require('../models/User');
+
 
 const Role = sequelize.define(
     "role",
@@ -20,6 +22,16 @@ const Role = sequelize.define(
         }
     }
 );
+
+Role.hasMany(User, {
+    foreignKey: "role_id",
+    sourceKey: "id",
+});
+
+User.belongsTo(Role,{
+    foreignKey: "role_id",
+    sourceKey: "id",
+});
 
 (async () => {
     try {

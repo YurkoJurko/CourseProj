@@ -1,5 +1,6 @@
 const sequelize = require("../DB/mysql");
 const { DataTypes } = require("sequelize");
+const Post = require("../models/Post");
 
 const Tag = sequelize.define(
     "tag",
@@ -19,6 +20,16 @@ const Tag = sequelize.define(
         },
     }
 );
+
+Tag.hasMany(Post, {
+    foreignKey: "post_id",
+    sourceKey: "id",
+});
+
+Post.belongsTo(Tag,{
+    foreignKey: "post_id",
+    sourceKey: "id",
+});
 
 (async () => {
     try {

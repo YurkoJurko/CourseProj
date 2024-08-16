@@ -1,5 +1,7 @@
 const sequelize = require("../DB/mysql");
 const { DataTypes } = require("sequelize");
+const Post = require("../models/Post");
+const User = require("../models/User");
 
 const Like = sequelize.define(
     "like",
@@ -19,6 +21,26 @@ const Like = sequelize.define(
         },
     }
 );
+
+User.hasMany(Like, {
+    foreignKey: "user_id",
+    sourceKey: "id",
+});
+
+Like.belongsTo(User,{
+    foreignKey: "user_id",
+    sourceKey: "id",
+});
+
+Post.hasMany(Like, {
+    foreignKey: "post_id",
+    sourceKey: "id",
+});
+
+Like.belongsTo(Post,{
+    foreignKey: "post_id",
+    sourceKey: "id",
+});
 
 (async () => {
     try {
