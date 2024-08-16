@@ -25,7 +25,7 @@ require("./models/Like");
 require("./models/Comment");
 require("./models/Tag");
 
-require("routes/index");
+require("./routers/index.js")(app);
 
 app.listen(PORT, () => {
   console.log(`Your are listening on port ${PORT}`);

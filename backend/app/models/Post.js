@@ -21,7 +21,7 @@ const Post = sequelize.define(
             type: DataTypes.TEXT,
             allowNull: false
         },
-        shot_description: {
+        short_description: {
             type: DataTypes.TEXT,
             allowNull: false
         },
