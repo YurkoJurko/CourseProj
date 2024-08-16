@@ -28,13 +28,11 @@ module.exports.getPost = async (req, res) => {
 };
 
 module.exports.createPost = async (req, res) => {
-    try{
-        const{tag_id, title, content, short_description, is_private} = req.body;
+    try {
+        const { tag_id, title, content, short_description, is_private } = req.body;
 
-        if(!tag_id || !title || !content || !short_description || !is_private){
-            res.status(400).json({
-                error: "Bad Request!",
-            })
+        if (!tag_id || !title || !content || !short_description || is_private === undefined) {
+            return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
         const post = await Post.create({
@@ -47,22 +45,19 @@ module.exports.createPost = async (req, res) => {
 
         return res.status(201).json(post);
 
-    }catch(err){
-        res.status(500).json({
-            error: err.message,
-        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-}
+};
+
 
 module.exports.updatePost = async (req, res) => {
     try{
         const {tag_id, title, content, short_description, is_private} = req.body;
         const postId = req.params.id;
 
-        if(!tag_id || !title || !content || !short_description || !is_private){
-            res.status(400).json({
-                error: "Bad Request!",
-            })
+        if (!postId || !tag_id || !title || !content || !short_description || !is_private) {
+            return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
         const [updated] = await Post.update({
@@ -89,21 +84,22 @@ module.exports.updatePost = async (req, res) => {
 }
 
 module.exports.deletePost = async (req, res) => {
-    try{
-        const {tag_id, title, content, short_description, is_private} = req.body;
+    try {
         const postId = req.params.id;
-        if(!tag_id || !title || !content || !short_description || !is_private){
-            res.status(400).json({
-                error: "Bad Request!",
-            })
+        const post = await Post.findByPk(postId);
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
         }
+
         await Post.destroy({
-            where: {id:postId}
+            where: { id: postId }
         });
+
         res.status(204).end();
-    }catch(err){
+    } catch (err) {
         res.status(500).json({
             error: err.message,
         });
     }
-}
+};
+
