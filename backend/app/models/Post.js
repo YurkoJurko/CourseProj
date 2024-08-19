@@ -1,5 +1,5 @@
 const sequelize = require("../DB/mysql");
-const { DataTypes } = require("sequelize");
+const {DataTypes} = require("sequelize");
 
 const Post = sequelize.define(
     "post",
@@ -25,7 +25,7 @@ const Post = sequelize.define(
             type: DataTypes.TEXT,
             allowNull: false
         },
-        is_private:{
+        is_private: {
             type: DataTypes.TINYINT,
             allowNull: false,
             defaultValue: 0

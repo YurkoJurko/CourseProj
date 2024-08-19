@@ -29,9 +29,9 @@ module.exports.getComment = async (req, res) => {
 
 module.exports.createComment = async (req, res) => {
     try {
-        const { parent_id, user_id, post_id, content, like_count, created_at } = req.body;
+        const { parent_id, user_id, post_id, content, like_count } = req.body;
 
-        if (!user_id || !post_id || !content || !like_count || !created_at) {
+        if (!user_id || !post_id || !content || !like_count) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
@@ -40,7 +40,6 @@ module.exports.createComment = async (req, res) => {
             post_id,
             content,
             like_count,
-            created_at,
             parent_id: parent_id || null,
         });
 

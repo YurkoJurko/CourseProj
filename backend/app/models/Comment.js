@@ -40,16 +40,6 @@ const Comment = sequelize.define(
     }
 );
 
-Comment.hasMany(Comment, {
-    foreignKey: "parent_id",
-    sourceKey: "id",
-});
-
-Comment.belongsTo(Comment,{
-    foreignKey: "parent_id",
-    sourceKey: "id",
-});
-
 User.hasMany(Comment, {
     foreignKey: "user_id",
     sourceKey: "id",
