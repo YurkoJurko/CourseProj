@@ -1,10 +1,10 @@
-const Post = require("./../../../models/Post");
+const Like = require("./../../../models/Like");
 
 module.exports.getLikesList = async (req, res) => {
-    try{
-        const posts = await Post.findAll();
-        res.status(200).json(posts);
-    }catch(err){
+    try {
+        const likes = await Like.findAll();
+        res.status(200).json(likes);
+    } catch (err) {
         res.status(500).json({
             error: err.message,
         });
@@ -12,15 +12,15 @@ module.exports.getLikesList = async (req, res) => {
 };
 
 module.exports.getLike = async (req, res) => {
-    try{
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
+    try {
+        const likeId = req.params.id;
+        const like = await Like.findByPk(likeId);
 
-        if(!post){
-            res.status(400).json({error: "Post not found"});
+        if (!like) {
+            res.status(400).json({error: "Like not found"});
         }
-        res.status(200).json(post);
-    }catch(err){
+        res.status(200).json(like);
+    } catch (err) {
         res.status(500).json({
             error: err.message,
         });
@@ -29,70 +29,64 @@ module.exports.getLike = async (req, res) => {
 
 module.exports.createLike = async (req, res) => {
     try {
-        const { tag_id, title, content, short_description, is_private } = req.body;
+        const {user_id, post_id} = req.body;
 
-        if (!tag_id || !title || !content || !short_description || is_private === undefined) {
-            return res.status(400).json({ error: "Bad Request: Missing required fields!" });
+        if (!user_id || !post_id) {
+            return res.status(400).json({error: "Bad Request: Missing required fields!"});
         }
 
-        const post = await Post.create({
-            tag_id,
-            title,
-            content,
-            short_description,
-            is_private,
+        const like = await Like.create({
+            user_id,
+            post_id,
         });
 
-        return res.status(201).json(post);
+        return res.status(201).json(like);
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 };
 
 
-module.exports.updatePost = async (req, res) => {
-    try{
-        const {tag_id, title, content, short_description, is_private} = req.body;
-        const postId = req.params.id;
+module.exports.updateLike = async (req, res) => {
+    try {
+        const {user_id, post_id} = req.body;
+        const likeId = req.params.id;
 
-        if (!postId || !tag_id || !title || !content || !short_description || !is_private) {
-            return res.status(400).json({ error: "Bad Request: Missing required fields!" });
+        if (!likeId || !user_id || !post_id) {
+            return res.status(400).json({error: "Bad Request: Missing required fields!"});
         }
 
-        const [updated] = await Post.update({
-            tag_id,
-            title,
-            content,
-            short_description,
-            is_private,
-        },{
-            where: {id:postId}
+        const [updated] = await Like.update({
+            user_id,
+            post_id,
+        }, {
+            where: {id: likeId}
         });
-        if(!updated){
-            res.status(400).json({error: "Post Not Found!",});
+        if (!updated) {
+            res.status(400).json({error: "Like Not Found!",});
         }
 
-        const updatedPost = await Post.findByPk(postId)
-        return res.status(201).json(updatedPost);
+        const updatedLike = await Like.findByPk(likeId)
+        return res.status(201).json(updatedLike);
 
-    }catch(err){
+    } catch (err) {
         res.status(500).json({
             error: err.message,
         });
     }
 }
 
-module.exports.deletePost = async (req, res) => {
+module.exports.deleteLike = async (req, res) => {
     try {
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
-        if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+        const likeId = req.params.id;
+        const like = await Like.findByPk(likeId);
+        if (!like) {
+            return res.status(404).json({error: "Like not found"});
         }
 
-        await Post.destroy({
-            where: { id: postId }
+        await Like.destroy({
+            where: {id: likeId}
         });
 
         res.status(204).end();

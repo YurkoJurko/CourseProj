@@ -2,8 +2,8 @@ const Role = require("./../../../models/Role");
 
 module.exports.getRolesList = async (req, res) => {
     try{
-        const posts = await Role.findAll();
-        res.status(200).json(posts);
+        const roles = await Role.findAll();
+        res.status(200).json(roles);
     }catch(err){
         res.status(500).json({
             error: err.message,
@@ -35,12 +35,12 @@ module.exports.createRole = async (req, res) => {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const post = await Role.create({
+        const role = await Role.create({
             name,
             created_at,
         });
 
-        return res.status(201).json(post);
+        return res.status(201).json(role);
 
     } catch (err) {
         res.status(500).json({ error: err.message });
