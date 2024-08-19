@@ -1,8 +1,8 @@
-const Post = require("./../../../models/Post");
+const Role = require("./../../../models/Role");
 
-module.exports.getPostsList = async (req, res) => {
+module.exports.getRolesList = async (req, res) => {
     try{
-        const posts = await Post.findAll();
+        const posts = await Role.findAll();
         res.status(200).json(posts);
     }catch(err){
         res.status(500).json({
@@ -11,15 +11,15 @@ module.exports.getPostsList = async (req, res) => {
     }
 };
 
-module.exports.getPost = async (req, res) => {
+module.exports.getRole = async (req, res) => {
     try{
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
+        const roleId = req.params.id;
+        const role = await Role.findByPk(roleId);
 
-        if(!post){
-            res.status(400).json({error: "Post not found"});
+        if(!role){
+            res.status(400).json({error: "Role not found"});
         }
-        res.status(200).json(post);
+        res.status(200).json(role);
     }catch(err){
         res.status(500).json({
             error: err.message,
@@ -27,20 +27,17 @@ module.exports.getPost = async (req, res) => {
     }
 };
 
-module.exports.createPost = async (req, res) => {
+module.exports.createRole = async (req, res) => {
     try {
-        const { tag_id, title, content, short_description, is_private } = req.body;
+        const { name, created_at} = req.body;
 
-        if (!tag_id || !title || !content || !short_description || is_private === undefined) {
+        if (!name || !created_at) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const post = await Post.create({
-            tag_id,
-            title,
-            content,
-            short_description,
-            is_private,
+        const post = await Role.create({
+            name,
+            created_at,
         });
 
         return res.status(201).json(post);
@@ -51,30 +48,27 @@ module.exports.createPost = async (req, res) => {
 };
 
 
-module.exports.updatePost = async (req, res) => {
+module.exports.updateRole = async (req, res) => {
     try{
-        const {tag_id, title, content, short_description, is_private} = req.body;
-        const postId = req.params.id;
+        const { name, created_at} = req.body;
+        const roleId = req.params.id;
 
-        if (!postId || !tag_id || !title || !content || !short_description || !is_private) {
+        if (!roleId || !name || !created_at) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const [updated] = await Post.update({
-            tag_id,
-            title,
-            content,
-            short_description,
-            is_private,
+        const [updated] = await Role.update({
+            name,
+            created_at,
         },{
-            where: {id:postId}
+            where: {id:roleId}
         });
         if(!updated){
-            res.status(400).json({error: "Post Not Found!",});
+            res.status(400).json({error: "Role Not Found!",});
         }
 
-        const updatedPost = await Post.findByPk(postId)
-        return res.status(201).json(updatedPost);
+        const updatedRole = await Role.findByPk(roleId)
+        return res.status(201).json(updatedRole);
 
     }catch(err){
         res.status(500).json({
@@ -83,16 +77,16 @@ module.exports.updatePost = async (req, res) => {
     }
 }
 
-module.exports.deletePost = async (req, res) => {
+module.exports.deleteRole = async (req, res) => {
     try {
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
-        if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+        const roleId = req.params.id;
+        const role = await Role.findByPk(roleId);
+        if (!role) {
+            return res.status(404).json({ error: "Role not found" });
         }
 
-        await Post.destroy({
-            where: { id: postId }
+        await Role.destroy({
+            where: { id: roleId }
         });
 
         res.status(204).end();
