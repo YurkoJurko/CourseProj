@@ -1,9 +1,9 @@
-const Post = require("./../../../models/Post");
+const Comment = require("./../../../models/Comment");
 
-module.exports.getPostsList = async (req, res) => {
+module.exports.getCommentsList = async (req, res) => {
     try{
-        const posts = await Post.findAll();
-        res.status(200).json(posts);
+        const comments = await Comment.findAll();
+        res.status(200).json(comments);
     }catch(err){
         res.status(500).json({
             error: err.message,
@@ -11,15 +11,15 @@ module.exports.getPostsList = async (req, res) => {
     }
 };
 
-module.exports.getPost = async (req, res) => {
+module.exports.getComment = async (req, res) => {
     try{
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
+        const commentId = req.params.id;
+        const comment = await Comment.findByPk(commentId);
 
-        if(!post){
-            res.status(400).json({error: "Post not found"});
+        if(!comment){
+            res.status(400).json({error: "Comment not found"});
         }
-        res.status(200).json(post);
+        res.status(200).json(comment);
     }catch(err){
         res.status(500).json({
             error: err.message,
@@ -27,23 +27,23 @@ module.exports.getPost = async (req, res) => {
     }
 };
 
-module.exports.createPost = async (req, res) => {
+module.exports.createComment = async (req, res) => {
     try {
-        const { tag_id, title, content, short_description, is_private } = req.body;
+        const { parent_id, user_id, post_id, content, like_count, created_at } = req.body;
 
-        if (!tag_id || !title || !content || !short_description || is_private === undefined) {
+        if (!user_id || !post_id || !content || !like_count || !created_at) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const post = await Post.create({
-            tag_id,
-            title,
+        const comment = await Comment.create({
+            user_id,
+            post_id,
             content,
-            short_description,
-            is_private,
+            like_count,
+            created_at,
         });
 
-        return res.status(201).json(post);
+        return res.status(201).json(comment);
 
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -51,30 +51,30 @@ module.exports.createPost = async (req, res) => {
 };
 
 
-module.exports.updatePost = async (req, res) => {
+module.exports.updateComment = async (req, res) => {
     try{
-        const {tag_id, title, content, short_description, is_private} = req.body;
-        const postId = req.params.id;
+        const { parent_id, user_id, post_id, content, like_count, created_at } = req.body;
+        const commentId = req.params.id;
 
-        if (!postId || !tag_id || !title || !content || !short_description || !is_private) {
+        if (!commentId || !user_id || !post_id || !content || !like_count || !created_at) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 
-        const [updated] = await Post.update({
-            tag_id,
-            title,
+        const [updated] = await Comment.update({
+            user_id,
+            post_id,
             content,
-            short_description,
-            is_private,
+            like_count,
+            created_at,
         },{
-            where: {id:postId}
+            where: {id:commentId}
         });
         if(!updated){
-            res.status(400).json({error: "Post Not Found!",});
+            res.status(400).json({error: "Comment Not Found!",});
         }
 
-        const updatedPost = await Post.findByPk(postId)
-        return res.status(201).json(updatedPost);
+        const updatedComment = await Comment.findByPk(commentId)
+        return res.status(201).json(updatedComment);
 
     }catch(err){
         res.status(500).json({
@@ -83,16 +83,16 @@ module.exports.updatePost = async (req, res) => {
     }
 }
 
-module.exports.deletePost = async (req, res) => {
+module.exports.deleteComment = async (req, res) => {
     try {
-        const postId = req.params.id;
-        const post = await Post.findByPk(postId);
-        if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+        const commentId = req.params.id;
+        const comment = await Comment.findByPk(commentId);
+        if (!comment) {
+            return res.status(404).json({ error: "Comment not found" });
         }
 
-        await Post.destroy({
-            where: { id: postId }
+        await Comment.destroy({
+            where: { id: commentId }
         });
 
         res.status(204).end();
