@@ -31,7 +31,7 @@ module.exports.createUser = async (req, res) => {
     try {
         const { email, nickname, password, role_id, created_at, allowed_notifications } = req.body;
 
-        if (!email || !nickname || !password || !role_id ) {
+        if (!email || !nickname || !password ) {
             return res.status(400).json({ error: "Bad Request: Missing required fields!" });
         }
 

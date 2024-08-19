@@ -41,6 +41,7 @@ module.exports.createComment = async (req, res) => {
             content,
             like_count,
             created_at,
+            parent_id: parent_id || null,
         });
 
         return res.status(201).json(comment);
