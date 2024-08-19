@@ -1,6 +1,6 @@
 const Post = require("./../../../models/Post");
 
-module.exports.getPostsList = async (req, res) => {
+module.exports.getLikesList = async (req, res) => {
     try{
         const posts = await Post.findAll();
         res.status(200).json(posts);
@@ -11,7 +11,7 @@ module.exports.getPostsList = async (req, res) => {
     }
 };
 
-module.exports.getPost = async (req, res) => {
+module.exports.getLike = async (req, res) => {
     try{
         const postId = req.params.id;
         const post = await Post.findByPk(postId);
@@ -27,7 +27,7 @@ module.exports.getPost = async (req, res) => {
     }
 };
 
-module.exports.createPost = async (req, res) => {
+module.exports.createLike = async (req, res) => {
     try {
         const { tag_id, title, content, short_description, is_private } = req.body;
 
