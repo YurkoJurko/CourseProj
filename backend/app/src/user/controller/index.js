@@ -1,10 +1,11 @@
 const User = require("./../../../models/User");
+const bcryptjs = require("bcryptjs");
 
 module.exports.getUsersList = async (req, res) => {
     try{
         const users = await User.findAll();
         res.status(200).json(users);
-    }catch(err){
+    }catch(err){тзь
         res.status(500).json({
             error: err.message,
         });
@@ -101,6 +102,33 @@ module.exports.deleteUser = async (req, res) => {
         res.status(500).json({
             error: err.message,
         });
+    }
+};
+
+module.exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        const isMatch = bcryptjs.compareSync(password, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        const payload = { id: user.id, email: user.email };
+        const token = jwt.sign(payload, process.env.SECRET || "secret", {
+            expiresIn: "1h",
+        });
+
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 

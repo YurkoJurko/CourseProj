@@ -12,6 +12,11 @@ router.get("/:id", (req, res) => { //for item
 router.post("/", (req, res) => {
     controller.createUser(req, res);
 });
+
+router.post("/login", (req, res) => {
+    controller.login(req, res);
+})
+
 router.put("/:id", (req, res) => {
     controller.updateUser(req, res);
 });
