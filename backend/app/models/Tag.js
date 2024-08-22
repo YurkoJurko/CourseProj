@@ -22,12 +22,12 @@ const Tag = sequelize.define(
 );
 
 Tag.hasMany(Post, {
-    foreignKey: "post_id",
+    foreignKey: "tag_id",
     sourceKey: "id",
 });
 
 Post.belongsTo(Tag,{
-    foreignKey: "post_id",
+    foreignKey: "tag_id",
     sourceKey: "id",
 });
 
